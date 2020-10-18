@@ -1,5 +1,5 @@
 CREATE OR REPLACE
-    PACKAGE "PREVENTA_PROD_2_1" AS
+    PACKAGE "PREVENTA_PROD_2_1_1" AS
     FUNCTION  LOGINUSUARIO(usernamex in varchar2,passwordx in varchar2,codigox in varchar2,imeix in varchar2)return TYPES.ref_cursor;
     PROCEDURE VALI_REGIST_MAC(usernamex  IN VARCHAR2,passwordx IN VARCHAR2,macNewx	IN VARCHAR2,rptax  IN OUT    NUMBER,mensajex IN OUT    VARCHAR2);
     FUNCTION RUTAS_DIA_USUARIO(usernamex IN VARCHAR2,diax IN VARCHAR2)return TYPES.ref_cursor;
@@ -16,7 +16,8 @@ CREATE OR REPLACE
     FUNCTION LISTAR_GIRO_CLIENTE return types.ref_cursor;
     FUNCTION LISTAR_LP(usuariox IN VARCHAR2) RETURN TYPES.REF_CURSOR;
 --FUNCTION REGISTRARCLIENTE (CLIENTE_OBJ IN CLIENTE_MOVIL) return number;
-    PROCEDURE MANTCLIENTE(CLIENTE_OBJ IN CLIENTE_MOVIL,localesx IN LOCAL_CLIENTE_MOVIL_TABLE_UPD,operacionx IN NUMBER ,rptax IN OUT NUMBER,mensajex IN OUT VARCHAR2);
+--PROCEDURE MANTCLIENTE(CLIENTE_OBJ IN CLIENTE_MOVIL,localesx IN LOCAL_CLIENTE_MOVIL_TABLE_UPD,operacionx IN NUMBER ,rptax IN OUT NUMBER,mensajex IN OUT VARCHAR2);
+    PROCEDURE MANTCLIENTE(CLIENTE_OBJ IN CLIENTE_MOVIL_AUDITV2,localesx IN LOCAL_CLIEN_MOVIL_TABLE_UPDATE,operacionx IN NUMBER ,rptax IN OUT NUMBER,mensajex IN OUT VARCHAR2);
 
 
 
@@ -34,10 +35,12 @@ CREATE OR REPLACE
                                     pedidosEfectivosx OUT NUMBER,pedidosRechazadosx  OUT NUMBER,visitasnumx OUT NUMBER,visitassolesx OUT NUMBER, ticketdiariox OUT NUMBER,ticketmensualx OUT NUMBER,cursoravancex OUT types.ref_cursor,cabecerax OUT types.ref_cursor,politicasx OUT types.ref_cursor,adicionalx OUT types.ref_cursor,sueldovendedorx OUT types.ref_cursor,cadenarutasx OUT VARCHAR2,permiteofflinex OUT NUMBER);
 
 
-    PROCEDURE  CARGAR_DATOS_ALTA(usuariox IN VARCHAR2,cdptosx OUT types.ref_cursor,cgirosx OUT types.ref_cursor,ctiposx OUT types.ref_cursor,clp OUT types.ref_cursor,crutasx OUT types.ref_cursor );
+    PROCEDURE  CARGAR_DATOS_ALTA(usuariox IN VARCHAR2,cdptosx OUT types.ref_cursor,cgirosx OUT types.ref_cursor,ctiposx OUT types.ref_cursor,clp OUT types.ref_cursor,crutasx OUT types.ref_cursor,formatosx OUT types.ref_cursor );
     PROCEDURE  VALIDAR_DOCUMENTO(nrodocx IN VARCHAR2,rptax  IN OUT    NUMBER,mensajex IN OUT    VARCHAR2);
-    PROCEDURE  DATOS_CLIENTE_UPDATE(codClientex IN VARCHAR2,usuariox IN VARCHAR2,cdatosclientex OUT types.ref_cursor,clocalesclientex OUT types.ref_cursor );
-    PROCEDURE MANTLOCAL(codClientex IN VARCHAR2,usuariox IN VARCHAR2,operacionx IN VARCHAR2,LOCAL_OBJ IN LOCAL_CLIENTE_MOVIL_UPD,rptax IN OUT NUMBER,mensajex IN OUT VARCHAR2);
+--PROCEDURE  DATOS_CLIENTE_UPDATE(codClientex IN VARCHAR2,usuariox IN VARCHAR2,cdatosclientex OUT types.ref_cursor,clocalesclientex OUT types.ref_cursor );
+    PROCEDURE  DATOS_CLIENTE_UPDATE(usuariox IN VARCHAR2,codClientex IN VARCHAR2,cdatosclientex OUT types.ref_cursor,clocalesclientex OUT types.ref_cursor,cgirosx OUT types.ref_cursor,ctiposx OUT types.ref_cursor,formatosx OUT types.ref_cursor,observacionesx   OUT types.ref_cursor);
+
+    PROCEDURE MANTLOCAL(codClientex IN VARCHAR2,usuariox IN VARCHAR2,operacionx IN VARCHAR2,LOCAL_OBJ IN LOCAL_CLIENTE_MOVIL_AUDIV2,rptax IN OUT NUMBER,mensajex IN OUT VARCHAR2);
     PROCEDURE REGISTRARNOPEDIDO(codClientex IN VARCHAR2,codEmpresax IN VARCHAR2,codLocalx in VARCHAR2, codRutax in VARCHAR2,descclientex in VARCHAR2,descmotivox in VARCHAR2,direccionx IN VARCHAR2,usuariox IN VARCHAR2,coordenadasx IN VARCHAR2,rptax IN OUT NUMBER,mensajex IN OUT VARCHAR2  );
     FUNCTION PEDIDOSPORUSUARIO(usuariox VARCHAR2,fechapedido varchar2,codlocalidadx varchar2,codalmacenx varchar2) RETURN TYPES.REF_CURSOR;
     FUNCTION DETALLESBYPEDIDO(codempresax VARCHAR2,codalmacenx VARCHAR2,nropedidox VARCHAR2 ) RETURN TYPES.REF_CURSOR;
@@ -124,7 +127,26 @@ CREATE OR REPLACE
 
     PROCEDURE  VALIDAR_EDICION(usuariox IN VARCHAR2,estadox IN OUT NUMBER,mensajex IN OUT VARCHAR2);
 
+    FUNCTION TIPOS_BY_GIRO(codgirox IN VARCHAR2)RETURN TYPES.REF_CURSOR ;
 
-END PREVENTA_PROD_2_1;
+    PROCEDURE INSERT_DCTO_TEMP(pcorrelativo number ,TABLE_OBJ IN PEDIDO_PREVENTA_TABLE);
 
 
+    PROCEDURE registrar_pedido_xray( secpedxtrans in number,
+                                     listobjpedtransfx   IN PEDIDO_PREVENTA_TABLE,
+                                     rptax              IN OUT  NUMBER,
+                                     mensajex           IN OUT  VARCHAR2
+    );
+
+
+    PROCEDURE INSERT_BONIF_TEMP(pcorrelativo number ,TABLE_OBJ IN PEDIDO_PREVENTA_TABLE);
+
+    PROCEDURE CUSTOMERSBYROUTE(PCODEROUTE IN VARCHAR2,OESTADO IN OUT NUMBER,OMENSAJE IN OUT VARCHAR2,ORPTA  IN OUT TYPES.REF_CURSOR);
+
+--NUEVA VERSION
+    PROCEDURE LOGIN_USER_EMAIL(p_USEREMAIL IN VARCHAR2,p_PASSWORD IN VARCHAR2, x_ESTADO OUT NUMBER,x_MENSAJE OUT VARCHAR2,x_RPTA OUT TYPES.REF_CURSOR);
+    PROCEDURE SP_LIU_USER(p_PARAMETROS IN LISTPARAMETR0STRING,x_ESTADO OUT NUMBER,x_MENSAJE OUT VARCHAR2,x_RPTA OUT TYPES.REF_CURSOR);
+    FUNCTION F_PASSWORD(P_PASSWORD IN VARCHAR2,p_MODO IN VARCHAR2)RETURN VARCHAR2;
+    PROCEDURE SP_HOME_DATA(p_PARAMETROS IN LISTPARAMETR0STRING,x_ESTADO OUT NUMBER,x_MENSAJE OUT VARCHAR2,x_RPTA OUT TYPES.REF_CURSOR);
+
+END PREVENTA_PROD_2_1_1;
